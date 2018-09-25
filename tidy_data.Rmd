@@ -1,0 +1,35 @@
+---
+title: "tidy_data"
+author: "Courtney Johnson"
+date: "September 25, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+```{r}
+pulse_data = haven::read_sas("./data/public_pulse_data.sas7bdat") %>%
+  janitor::clean_names()
+pulse_data
+```
+
+This isn't tidy yet...
+
+```{r}
+pulse_tidy = pulse_data %>%
+  gather(key = "visit", value = "bdi score", bdi_score_bl:bdi_score_12m)
+```
+
+Illustrate separate:
+
+
+```{r}
+pulse_tidy %>%
+  separate(visit, into = c("bdi_str", "score_str", "visit"), sep = "_") %>%
+  select(-bdi_str, -score_str) %>%
+  mutate(visit = replace(visit, visit == "bl", "00m"))
+```
+
+

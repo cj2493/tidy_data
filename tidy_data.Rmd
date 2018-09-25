@@ -32,4 +32,17 @@ pulse_tidy %>%
   mutate(visit = replace(visit, visit == "bl", "00m"))
 ```
 
+Altogether the data import/ cleaning pipeline is
+
+```{r}
+pulse_df = 
+  haven::read_sas("./data/public_pulse_data.sas7bdat") %>%
+  janitor::clean_names() %>%
+  gather(key = "visit", value = "bdi score", bdi_score_bl:bdi_score_12m) %>%
+  separate(visit, into = c("bdi_str", "score_str", "visit"), sep = "_") %>%
+  select(-bdi_str, -score_str) %>%
+  mutate(visit = replace(visit, visit == "bl", "00m"))
+```
+
+
 
